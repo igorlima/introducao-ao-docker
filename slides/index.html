@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Uma breve introdução ao Docker</title>
+  <link rel='stylesheet prefetch' href='https://cdn.rawgit.com/hakimel/reveal.js/3.3.0/css/reveal.css'>
+  <link rel='stylesheet prefetch' href='https://cdn.rawgit.com/hakimel/reveal.js/3.3.0/css/theme/white.css'>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reveal">
+  <div class="slides">
+    <section>
+      <section>
+        <h1>Introdução ao Dokcer</h1>
+        <p>O intuito dessa apresentação é aprender alguns conceitos básicos. Apenas uma breve introdução para entender por onde e como começar.</p>
+        <p>
+          <small>
+            Igor Ribeiro Lima - lima.igorribeiro@gmail.com
+          </small>
+        </p>
+      </section>
+      <section>
+        <ul>
+          <li>Formado em Ciencia da Computação, e mestre em Engenharia de Sistema</li>
+          <li>Atualmente trabalho remoto em um dos maiores e-commerce de material esportivo</li>
+          <li>
+            <span>No dia a dia, as tarefas mais frequentes são:</span>
+            <ul>
+              <li>o desenvolvimento de novos requisitos</li>
+              <li>deploy em diversos ambientes</li>
+              <li>monitoramento dos micro servicos em produção</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </section>
+    <section>
+      <h1>Sumário</h1>
+      <ul>
+        <li>Evolução do Modelo de Computação</li>
+        <li>Docker</li>
+        <li>
+          <span>Como rodar uma aplicação Node.js em Docker</span>
+          <ul>
+            <li>Parte 1: Criando um aplicação Node.js</li>
+            <li>Parte 2: Como dockerizar uma aplicação Node.js</li>
+          </ul>
+        </li>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h1>Evolução do Modelo de Computação</h1>
+      <ul>
+        <li>Grandes Data Center</li>
+        <li>Virtual Machines</li>
+        <li>VMs na nuvem (EC2)</li>
+        <li>Containers</li>
+        <li>Serveless</li>
+      </ul>
+    </section>
+    <section>
+      <h1>Docker - o que é e o que o não é</h1>
+      <span>Docker não é um sistema de virtualização tradicional. Enquanto em um ambiente de virtualização tradicional nós temos um S.O. completo e isolado, dentro do Docker nós temos recursos isolados que utilizando bibliotecas de kernel em comum (entre host e container)</span>
+    </section>
+    <section>
+      <h3>Por que rodar uma aplicação em docker?</h3>
+      <ul>
+        <li>é possível executar uma aplicação em qualquer computador que suporta docker</li>
+        <li>não é preciso instalando ou baixar varias dependencias e bibliotecas na maquina</li>
+        <li>
+          <span>o ambiente onde a aplicação estiver rodando será consistente</span>
+          <ul>
+            <li><i>isso significa que a aplicação vai rodar exatamente da mesma forma pro desenvolvedor, tester, cliente, ambiente de homologação e etc.</i></li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h1>Como rodar uma aplicação Node.js em Docker</h1>
+      <aside class="notes">uma boa pratica é rodar um único processo por <i>container</i></aside>
+    </section>
+    <section>
+      <section>
+        <h3>Parte 1: Criando um aplicação Node.js</h3>
+        <ul>
+          <li>Instalando o Node.js</li>
+          <li>Inicializando uma nova aplicação via NPM</li>
+          <li>Instalando o Framework Express</li>
+          <li>package.json</li>
+          <li>Detalhes da aplicação Hello World</li>
+          <li>Rodando a aplicação</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Instalando o Node.js</h3>
+        <a href="nodejs.org/en/download/package-manager"><strong>nodejs.org/en/download/package-manager</strong></a>
+      </section>
+      <section>
+        <h3>Inicializando uma nova aplicação via NPM</h3>
+        <pre><code data-trim data-noescape>
+$ mkdir helloworld 
+$ cd helloworld
+$ npm init 
+        </code></pre>
+        <aside class="notes">NPM irá criar o arquivo package.json que vai conter todas as dependências necessárias da aplicação.</aside>
+      </section>
+      <section>
+        <h3>Instalando o Framework Express</h3>
+        <pre><code data-trim data-noescape>
+$ npm install express --save
+        </code></pre>
+      </section>
+      <section>
+        <h3>Como deve ficar o package.json</h3>
+        <pre><code data-trim data-noescape>
+{
+  "name": "helloworld",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
+        </code></pre>
+      </section>
+      <section>
+        <h3>Detalhes da aplicação Hello World</h3>
+        <pre><code data-trim data-noescape>
+// arquivo index.js
+// Load express module with `require` directive
+var express = require('express')
+var app = express()
+
+//Define request response in root URL (/)
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+})
+
+// Launch listening server on port 8081
+app.listen(8081, function () {
+  console.log('app listening on port 8081!')
+})
+        </code></pre>
+      </section>
+      <section>
+        <h3>Rodando a aplicação</h3>
+        <pre><code data-trim data-noescape>
+$ node index.js
+        </code></pre>
+        <aside class="notes">a aplicação ficar disponível no seguinte endereço <a href="http://localhost:8081/">http://localhost:8081/</a></aside>
+      </section>
+    </section>
+    <section>
+      <section>
+        <h3>Parte 2: Como dockerizar uma aplicação Node.js</h3>
+        <ul>
+          <li>Instalando o Docker</li>
+          <li>Escrevendo o Dockerfile</li>
+          <li>Construindo a imagem Docker da aplicação</li>
+          <li>Rodando o container Docker</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Instalando o Docker</h3>
+        <a href="https://docs.docker.com/install/">https://docs.docker.com/install/</a>
+      </section>
+      <section>
+        <h3>Escrevendo o Dockerfile</h3>
+        <ul>
+          <li>definir uma imagem de template</li>
+          <li>definir o diretorio padrao para a aplicação dentro do container</li>
+          <li>copiar a aplicação para o container</li>
+          <li>definir o comando de como rodar a aplicação</li>
+          <li>expor a porta da aplicação</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Dockerfile</h3>
+        <pre><code data-trim data-noescape>
+FROM node:10
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+CMD node index.js
+EXPOSE 8081
+        </code></pre>
+      </section>
+      <section>
+        <h3>Construindo a imagem Docker da aplicação</h3>
+        <pre><code data-trim data-noescape>
+docker build -t hello-world .
+        </code></pre>
+      </section>
+      <section>
+        <h3>Dicas 1</h3>
+        <ul>
+          <li>
+            <p>comando para listar as imagens:</p>
+            <code>docker image ls</code>
+          </li>
+          <li>
+            <p>comando para ir limpando as imagens:</p>
+            <code>docker rmi image_id</code>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Dicas 2</h3>
+        <ul>
+          <li>
+            <p>comando para listar todos os containers:</p>
+            <code>docker ps --all</code>
+          </li>
+          <li>
+            <p>comando para um container:</p>
+            <code>docker stop container_id</code>
+          </li>
+          <li>
+            <p>comando para remover um container:</p>
+            <code>docker rm container_id</code>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Rodando o container Docker</h3>
+        <pre><code data-trim data-noescape>
+$ docker run -p 8081:8081 hello-world
+        </code></pre>
+      </section>
+    </section>
+    <section>
+      <strong>Como fazer o deploy do docker da aplicação?</strong>
+      <aside class="notes">esse conteúdo vai ficar para uma próxima seção - por enquanto fica o dever de casa</aside>
+    </section>
+    <section>
+      <strong>Obrigado!</strong>
+    </section>
+  </div>
+</div>
+<!--
+https://github.com/hakimel/reveal.js/
+https://github.com/hakimel/reveal.js/blob/master/README.md
+http://aseemk.com/talks/intro-to-coffeescript
+
+Other themes:
+blood.css
+league.css
+night.css
+black.css
+serif.css
+simple.css
+white.css
+-->
+
+<script src='https://cdn.rawgit.com/hakimel/reveal.js/3.3.0/js/reveal.js'></script>
+<script src="js/index.js"></script>
+
+</body>
+</html>
